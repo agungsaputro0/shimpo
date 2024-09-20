@@ -15,7 +15,6 @@ const LoginForm: FC = () => {
     }
   }, []);
 
-
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -25,7 +24,7 @@ const LoginForm: FC = () => {
     };
 
     try {
-      const response = await axios.post("http://localhost:8080/login", data, {
+      await axios.post("http://localhost:8080/login", data, {
         withCredentials: true,
       });
       notification.success({
@@ -33,7 +32,7 @@ const LoginForm: FC = () => {
         description: "Selamat, Anda berhasil Login!",
       });
       // Handle successful login (e.g., redirect to a different page)
-    } catch (error) {
+    } catch {
       setLoginFailed("Invalid credentials");
       notification.error({
         message: "Login Gagal!",
@@ -86,4 +85,3 @@ const LoginForm: FC = () => {
 };
 
 export default LoginForm;
-
