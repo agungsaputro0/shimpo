@@ -20,4 +20,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   );
 });
 
+// Menambahkan displayName untuk menghilangkan error linting
+Input.displayName = "Input";
+
 export default Input;

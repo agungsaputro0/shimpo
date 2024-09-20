@@ -15,6 +15,7 @@ const LoginForm: FC = () => {
     }
   }, []);
 
+
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -73,6 +74,11 @@ const LoginForm: FC = () => {
               message="Login"
             />
           </form>
+          
+          {/* Menampilkan pesan error login jika loginFailed tidak kosong */}
+          {loginFailed && (
+            <p className="text-red-500 mt-4 text-center">{loginFailed}</p>
+          )}
         </div>
       </div>
     </section>
@@ -80,3 +86,4 @@ const LoginForm: FC = () => {
 };
 
 export default LoginForm;
+
