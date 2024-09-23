@@ -3,11 +3,15 @@ import InputElement from "../atoms/InputElement";
 import Button from "../atoms/Button";
 import Head from "next/head";
 import axios from "axios";
-import { notification } from "antd";
+import { notification, Spin } from "antd";
+import { LoadingOutlined } from '@ant-design/icons'; 
+import { useRouter } from "next/router";
 
 const LoginForm: FC = () => {
   const [loginFailed, setLoginFailed] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
   const usernameRef = useRef<HTMLInputElement | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     if (usernameRef.current) {
@@ -17,6 +21,7 @@ const LoginForm: FC = () => {
 
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setLoading(true);
 
     const data = {
       email: event.currentTarget.email.value,
@@ -31,6 +36,7 @@ const LoginForm: FC = () => {
         message: "Login Berhasil!",
         description: "Selamat, Anda berhasil Login!",
       });
+      router.push("/Home");
       // Handle successful login (e.g., redirect to a different page)
     } catch {
       setLoginFailed("Invalid credentials");
@@ -38,8 +44,13 @@ const LoginForm: FC = () => {
         message: "Login Gagal!",
         description: "Mohon maaf, Kredensial Anda tidak valid!",
       });
+    } finally {
+      setLoading(false);
     }
   };
+
+  // Custom loading indicator
+  const loadingIndicator = <LoadingOutlined style={{ fontSize: 24, color: 'white' }} spin />;
 
   return (
     <section>
@@ -71,10 +82,16 @@ const LoginForm: FC = () => {
               type="submit"
               variant="bg-blue-700 w-full hover:bg-blue-900"
               message="Login"
+              disabled={loading}
             />
           </form>
           
-          {/* Menampilkan pesan error login jika loginFailed tidak kosong */}
+          {loading && (
+            <div className="flex justify-center items-center mt-4">
+              <Spin indicator={loadingIndicator} />
+            </div>
+          )}
+          
           {loginFailed && (
             <p className="text-red-500 mt-4 text-center">{loginFailed}</p>
           )}
