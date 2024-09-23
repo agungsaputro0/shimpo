@@ -7,7 +7,7 @@ const Welcome = () => {
             
             <div className="h-screen">
             <Head>
-                <title>SHIMPO</title>
+                <title>SIMPHO</title>
             </Head>
             <LandingLayouts layoutTitle="Selamat Datang!" layoutMessage="KPKNL Pekanbaru">
             </LandingLayouts>
