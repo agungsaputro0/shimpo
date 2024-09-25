@@ -3,7 +3,7 @@ import LandingLayouts from "@/components/templates/Landing";
 import Head from "next/head";
 const Home = () => {
     return (
-        <Homeshell>s
+        <Homeshell>
             <div className="h-screen">
             <Head>
                 <title>SIMPHO</title>

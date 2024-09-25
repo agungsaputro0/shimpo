@@ -7,6 +7,7 @@ import { notification, Spin } from "antd";
 import { LoadingOutlined } from '@ant-design/icons'; 
 import { useRouter } from "next/router";
 
+const baseURL = process.env.NEXT_PUBLIC_API_URL;
 const LoginForm: FC = () => {
   const [loginFailed, setLoginFailed] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
@@ -29,7 +30,7 @@ const LoginForm: FC = () => {
     };
 
     try {
-      await axios.post("https://gmqc2brb-8080.asse.devtunnels.ms/login", data, {
+      await axios.post(`${baseURL}/login`, data, {
         withCredentials: true,
       });
       notification.success({
@@ -55,7 +56,7 @@ const LoginForm: FC = () => {
   return (
     <section>
       <Head>
-        <title>SHIMPO</title>
+        <title>SIMPHO</title>
       </Head>
       <div className="flex justify-center items-center min-h-screen">
         <div className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-lg shadow-lg p-6 space-y-4 w-full sm:max-w-lg md:max-w-md lg:max-w-md min-w-[300px] ml-[10px] mr-[10px]">
