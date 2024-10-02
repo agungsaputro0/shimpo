@@ -29,14 +29,14 @@ const InputElement = forwardRef<HTMLInputElement, InputElementProps>(({
         type={typeInput}
         className="text-sm border-b-[1px] w-full py-2 px-2 text-white placeholder:opacity-90 bg-transparent focus:border-none"
         placeholder={inputPlaceholder}
-        ref={ref} // Pass ref correctly
-        {...props} // Spread other props to handle attributes like value, onChange, etc.
+        ref={ref} 
+        {...props} 
       />
     </div>
   );
 });
 
-// Optional: set a display name for easier debugging
+
 InputElement.displayName = 'InputElement';
 
 export default InputElement;

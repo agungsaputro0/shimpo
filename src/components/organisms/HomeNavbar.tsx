@@ -1,14 +1,15 @@
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { UseScroll } from '../hooks/UseScroll';
 import axios from 'axios';
 import { message } from 'antd';
 
 const baseURL = process.env.NEXT_PUBLIC_API_URL;
 const navigation = [
-  { name: 'Home', to: '/Welcome', current: false },
+  { name: 'Dashboard', to: '/Home', current: false },
   { name: 'Layanan Kami', to: '#', current: false },
   { name: 'Informasi Publik', to: '#', current: false },
 ];
@@ -17,53 +18,40 @@ function classNames(...classes: string[]): string {
   return classes.filter(Boolean).join(' ');
 }
 
-const HomeNavbar = () => {
-  const [isScrolled, setScrolled] = useState(false);
-  const [userName, setUserName] = useState<string | null>(null);
+type HomeNavbarProps = {
+  userName: string | null;
+};
+
+const HomeNavbar = ({ userName }: HomeNavbarProps) => {
+  const isScrolled = UseScroll(); 
   const router = useRouter();
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const isScrolled = window.scrollY > 0;
-      setScrolled(isScrolled);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
-
-  const fetchUserData = async () => {
-    try {
-      const response = await axios.get(`${baseURL}/me`, { withCredentials: true });
-      console.log('Response data:', response.data); // Debug respons
-      setUserName(response.data.name);
-    } catch (error) {
-      console.error('Error fetching user data:', error);
-      setUserName(null); 
-      router.push('/Login'); 
-    }
+  const handleProfileClick = () => {
+    router.push('/Profil'); 
   };
-
-  useEffect(() => {
-    fetchUserData(); // Fetch user data on component mount
-  }, []);
 
   const handleLogout = async () => {
     try {
       const response = await axios.delete(`${baseURL}/logout`, { withCredentials: true });
       if (response.status === 200) {
         message.success('Logout berhasil');
-        setUserName(null); // Reset userName to null on logout
-        router.push("/Login"); // Redirect to login page after logout
+        router.push("/Login"); 
       } else {
         console.error('Error during logout:', response.data);
       }
     } catch (error) {
       message.error('Terjadi kesalahan saat logout');
     }
+  };
+
+  const formatUserName = (name: string | null) => {
+    if (!name) return 'Akun'; 
+    
+    const nameParts = name.split(' '); 
+    const firstName = nameParts[0]; 
+    const lastName = nameParts.length > 1 ? nameParts[nameParts.length - 1] : ''; 
+    
+    return nameParts.length > 2 ? `${firstName} ${lastName}` : name; 
   };
 
   return (
@@ -111,7 +99,7 @@ const HomeNavbar = () => {
                     <Menu.Button className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">
                       <span className="sr-only">Open user menu</span>
                       <span className="text-gray-300 hover:text-white text-sm font-medium">
-                        {userName || 'Akun'}
+                        {formatUserName(userName)}
                       </span>
                     </Menu.Button>
                   </div>
@@ -128,6 +116,7 @@ const HomeNavbar = () => {
                       <Menu.Item>
                         {({ active }) => (
                           <button
+                            onClick={handleProfileClick}
                             className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
                           >
                             Profil
@@ -150,6 +139,15 @@ const HomeNavbar = () => {
               </div>
             </div>
           </div>
+          <Disclosure.Panel className="sm:hidden">
+            <div className="flex flex-col space-y-1 px-2 pb-2">
+              {navigation.map((item) => (
+                <Link key={item.name} href={item.to} className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">
+                  {item.name}
+                </Link>
+              ))}
+            </div>
+          </Disclosure.Panel>
         </>
       )}
     </Disclosure>

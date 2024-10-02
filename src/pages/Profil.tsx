@@ -1,6 +1,7 @@
 import Homeshell from "./HomeShell";
-import LandingLayouts from "@/components/templates/Landing";
 import Head from "next/head";
+import ProfilePage from "@/components/templates/ProfilTemplate";
+
 const appName = process.env.NEXT_PUBLIC_APP_NAME;
 const Home = () => {
     return (
@@ -9,8 +10,7 @@ const Home = () => {
             <Head>
                 <title>{appName}</title>
             </Head>
-            <LandingLayouts layoutTitle="Selamat Datang!" layoutMessage="KPKNL Pekanbaru">
-            </LandingLayouts>
+            <ProfilePage />
             </div>
         </Homeshell>
     )

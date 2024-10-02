@@ -1,3 +1,74 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
+
+/* global.css */
+.sidebar {
+    background: transparent; /* Transparansi background */
+    transition: width 0.3s ease-in-out;
+    width: 80px;
+    height: calc(100vh - 64px); /* Kurangi tinggi navbar */
+    position: fixed;
+    top: 64px;
+    left: 0;
+    z-index: 100;
+    color: white;
+}
+
+.sidebar-expanded {
+    width: 200px; /* Lebar saat di-hover */
+}
+
+.sidebar-menu-item {
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    transition: background-color 0.2s ease-in-out, opacity 0.2s ease-in-out;
+    background: transparent;
+}
+
+.sidebar-menu-item:hover {
+    background-color: rgba(34, 31, 31, 0.5);
+}
+
+.sidebar-menu-text {
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+    white-space: nowrap;
+}
+
+.sidebar-expanded .sidebar-menu-text {
+    opacity: 1; /* Teks muncul ketika di-hover */
+}
+
+/* Pastikan Ant Design component tidak override transparansi */
+.ant-layout-sider {
+    background: transparent !important;
+    border: none;
+}
+
+.ant-menu {
+    color: #ffffff!important;
+    background: transparent !important;
+    border: none;
+}
+
+.ant-menu:hover {
+    background-color: rgba(34, 31, 31, 0.5);
+}
+
+.ant-menu-item {
+    color: #ffffff!important;
+}
+
+.ant-menu-item:hover {
+    background-color: rgba(34, 31, 31, 0.5);
+    font-weight: bold;
+    color: #00ffff!important;
+}
+
+.ant-menu-item-selected {
+    background-color: transparent!important;
+    color: #ffffff!important;
+}
