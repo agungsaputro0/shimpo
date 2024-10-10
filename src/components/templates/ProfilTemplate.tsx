@@ -8,9 +8,16 @@ import { LoadingOutlined } from '@ant-design/icons';
 
 const baseURL = process.env.NEXT_PUBLIC_API_URL;
 
+interface UserProfile {
+  name: string;
+  nip: string;
+  email: string;
+  new_password?: string; // Optional jika tidak selalu diperlukan
+  konfirmasi_password?: string; // Optional jika tidak selalu diperlukan
+}
+
 const ProfilePage = () => {
   const [form] = Form.useForm();
-  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [submitLoading, setSubmitLoading] = useState(false); // State untuk loading submit
 
@@ -33,7 +40,7 @@ const ProfilePage = () => {
     fetchUserData();
   }, [form]);
 
-  const onFinish = async (values: any) => {
+  const onFinish = async (values: UserProfile) => { // Ganti any dengan UserProfile
     setSubmitLoading(true); // Mengatur loading submit ke true
     try {
       await axios.put(`${baseURL}/profil/update_me`, values, { withCredentials: true });
@@ -46,9 +53,6 @@ const ProfilePage = () => {
   };
 
   if (loading) return <LoadingSpinner />;
-
-  // Custom loading indicator untuk submit
-  const loadingIndicator = <LoadingOutlined style={{ fontSize: 24, color: 'white' }} spin />;
 
   return (
     <div className="flex pt-[64px] items-center justify-center">

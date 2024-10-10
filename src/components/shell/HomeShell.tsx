@@ -8,7 +8,7 @@ type AppShellProps = {
     children: React.ReactNode;
 }
 
-const Homeshell = (props: AppShellProps) => {
+const HomeShell = (props: AppShellProps) => {
     const [expanded, setExpanded] = useState(false);
     const { userName, loading } = useAuth();
 
@@ -16,22 +16,28 @@ const Homeshell = (props: AppShellProps) => {
         <main className="flex flex-col bg-[url('/assets/img/background_landing.jpg')] bg-no-repeat bg-center bg-cover bg-fixed w-full h-full overflow-y-auto">
             <HomeNavbar userName={userName} />
     
-            <div className="flex flex-1">
-                <div 
-                    className={`sidebar ${expanded ? 'sidebar-expanded' : ''} bg-transparent shadow-md h-full`}
-                    onMouseEnter={() => setExpanded(true)}
-                    onMouseLeave={() => setExpanded(false)}
-                >
-                <Sidebar />
+            {/* Menambahkan kondisi loading */}
+            {loading ? (
+                <div className="flex justify-center items-center h-full">
+                    <p>Loading...</p> {/* Atau bisa menggunakan komponen spinner */}
                 </div>
+            ) : (
+                <div className="flex flex-1">
+                    <div 
+                        className={`sidebar ${expanded ? 'sidebar-expanded' : ''} bg-transparent shadow-md h-full`}
+                        onMouseEnter={() => setExpanded(true)}
+                        onMouseLeave={() => setExpanded(false)}
+                    >
+                        <Sidebar />
+                    </div>
     
-                <div className="flex-1 p-6 overflow-y-auto transition-all duration-300">
-                    {props.children}
+                    <div className="flex-1 p-6 overflow-y-auto transition-all duration-300">
+                        {props.children}
+                    </div>
                 </div>
-            </div>
+            )}
         </main>
     );
 };
 
-
-export default Homeshell;
+export default HomeShell;
