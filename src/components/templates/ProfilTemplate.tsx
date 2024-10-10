@@ -1,129 +1,111 @@
-import React, { useEffect, useState } from 'react';
-import { Form, Button, message } from 'antd';
-import axios from 'axios';
-import InputElement from '../atoms/InputElement';
-import LoadingSpinner from '../atoms/LoadingSpinner';
+// ProfilTemplate.tsx
+import { FC, useEffect, useState } from "react";
+import axios from "axios";
+import InputElement from "../atoms/InputElement";
+import Button from "../atoms/Button";
+import { notification } from "antd";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 
 const baseURL = process.env.NEXT_PUBLIC_API_URL;
 
-interface UserProfile {
-  name: string;
-  nip: string;
-  email: string;
-  new_password?: string; // Optional jika tidak selalu diperlukan
-  konfirmasi_password?: string; // Optional jika tidak selalu diperlukan
-}
-
-const ProfilePage = () => {
-  const [form] = Form.useForm();
-  const [loading, setLoading] = useState(true);
-  const [submitLoading, setSubmitLoading] = useState(false); // State untuk loading submit
+const ProfilTemplate: FC = () => {
+  const [dataUser, setDataUser] = useState<any>({});
+  const userName = useSelector((state: RootState) => state.auth.userName);
 
   useEffect(() => {
-    const fetchUserData = async () => {
+    const fetchData = async () => {
       try {
-        const response = await axios.get(`${baseURL}/profil/me`, { withCredentials: true });
-        form.setFieldsValue({
-          name: response.data.name,
-          nip: response.data.nip,
-          email: response.data.email,
-        });
+        const response = await axios.get(`${baseURL}/user`, { withCredentials: true });
+        setDataUser(response.data);
       } catch (error) {
-        message.error('Gagal memuat data pengguna.');
-      } finally {
-        setLoading(false);
+        notification.error({
+          message: "Gagal Memuat Data",
+          description: "Terjadi kesalahan saat memuat data pengguna.",
+        });
       }
     };
 
-    fetchUserData();
-  }, [form]);
+    fetchData();
+  }, []);
 
-  const onFinish = async (values: UserProfile) => { // Ganti any dengan UserProfile
-    setSubmitLoading(true); // Mengatur loading submit ke true
+  const handleUpdate = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    // Mendapatkan elemen input dari form
+    const target = event.currentTarget as HTMLFormElement;
+    const updatedData = {
+      name: (target.elements.namedItem("name") as HTMLInputElement).value,
+      nip: (target.elements.namedItem("nip") as HTMLInputElement).value,
+      email: (target.elements.namedItem("email") as HTMLInputElement).value,
+      password: (target.elements.namedItem("password") as HTMLInputElement).value,
+    };
+
     try {
-      await axios.put(`${baseURL}/profil/update_me`, values, { withCredentials: true });
-      message.success('Data profil berhasil diperbarui.');
+      await axios.put(`${baseURL}/user`, updatedData, { withCredentials: true });
+      notification.success({
+        message: "Update Berhasil",
+        description: "Data profil Anda berhasil diperbarui.",
+      });
     } catch (error) {
-      message.error('Gagal memperbarui data profil.');
-    } finally {
-      setSubmitLoading(false); // Mengatur loading submit ke false
+      notification.error({
+        message: "Gagal Memperbarui Data",
+        description: "Terjadi kesalahan saat memperbarui data profil.",
+      });
     }
   };
 
-  if (loading) return <LoadingSpinner />;
-
   return (
-    <div className="flex pt-[64px] items-center justify-center">
-      <div className="backdrop-blur-md bg-white/20 rounded-xl p-8 shadow-lg max-w-4xl w-full">
-        <h1 className="text-2xl font-bold text-left text-white mb-6">Profil Anda</h1>
-        <Form form={form} onFinish={onFinish} layout="vertical">
-          <div className="grid grid-cols-2 gap-6">
-            <Form.Item name="name" rules={[{ required: true, message: 'Harap masukkan nama!' }]}>
-              <InputElement
-                inputClass="mb-4"
-                forwhat="name"
-                labelMessage="Nama"
-                typeInput="text"
-                inputName="name"
-                inputPlaceholder="Masukkan nama"
-              />
-            </Form.Item>
-            <Form.Item name="nip" rules={[{ required: true, message: 'Harap masukkan NIP!' }]}>
-              <InputElement
-                inputClass="mb-4"
-                forwhat="nip"
-                labelMessage="NIP"
-                typeInput="text"
-                inputName="nip"
-                inputPlaceholder="Masukkan NIP"
-              />
-            </Form.Item>
-          </div>
-
-          <div className="grid grid-cols-2 gap-6">
-            <Form.Item name="email" rules={[{ type: 'email', message: 'Harap masukkan email yang valid!' }]}>
-              <InputElement
-                inputClass="mb-4"
-                forwhat="email"
-                labelMessage="Email"
-                typeInput="email"
-                inputName="email"
-                inputPlaceholder="Masukkan email"
-              />
-            </Form.Item>
-            <Form.Item name="new_password" rules={[{ message: 'Harap masukkan password!' }]}>
-              <InputElement
-                inputClass="mb-4"
-                forwhat="new_password"
-                labelMessage="Password Baru"
-                typeInput="password"
-                inputName="new_password"
-                inputPlaceholder="Masukkan password Baru"
-              />
-            </Form.Item>
-          </div>
-          <div className="grid grid-cols-2 gap-6">
-            <Form.Item name="konfirmasi_password" rules={[{ required: true, message: 'Harap masukkan password!' }]}>
-              <InputElement
-                inputClass="mb-4"
-                forwhat="konfirmasi_password"
-                labelMessage="Konfirmasi Password"
-                typeInput="password"
-                inputName="konfirmasi_password"
-                inputPlaceholder="Masukkan konfirmasi password"
-              />
-            </Form.Item>
-          </div>
-
-          <Form.Item>
-            <Button type="primary" htmlType="submit" className="w-full bg-blue-500 text-white py-2 rounded-lg" loading={submitLoading}>
-              SIMPAN
-            </Button>
-          </Form.Item>
-        </Form>
+    <section>
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-lg shadow-lg p-6 space-y-4 w-full sm:max-w-lg md:max-w-md lg:max-w-md min-w-[300px] ml-[10px] mr-[10px]">
+          <h1 className="text-4xl font-bold text-white text-center">Profil</h1>
+          <form onSubmit={handleUpdate}>
+            <InputElement
+              inputClass="mb-6"
+              forwhat="name"
+              labelMessage="Nama"
+              typeInput="text"
+              inputName="name"
+              inputPlaceholder="Nama Anda"
+              defaultValue={dataUser.name || ""}
+            />
+            <InputElement
+              inputClass="mb-6"
+              forwhat="nip"
+              labelMessage="NIP"
+              typeInput="text"
+              inputName="nip"
+              inputPlaceholder="NIP Anda"
+              defaultValue={dataUser.nip || ""}
+            />
+            <InputElement
+              inputClass="mb-6"
+              forwhat="email"
+              labelMessage="Email"
+              typeInput="email"
+              inputName="email"
+              inputPlaceholder="example@example.com"
+              defaultValue={dataUser.email || ""}
+            />
+            <InputElement
+              inputClass="mb-6"
+              forwhat="password"
+              labelMessage="Password"
+              typeInput="password"
+              inputName="password"
+              inputPlaceholder="****"
+            />
+            <Button
+              type="submit"
+              variant="bg-blue-700 w-full hover:bg-blue-900"
+              message="Update"
+            />
+          </form>
+        </div>
       </div>
-    </div>
+    </section>
   );
 };
 
-export default ProfilePage;
+export default ProfilTemplate;

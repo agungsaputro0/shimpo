@@ -1,3 +1,4 @@
+// LoginForm.tsx
 import { FC, useEffect, useRef, useState } from "react";
 import InputElement from "../atoms/InputElement";
 import Button from "../atoms/Button";
@@ -12,7 +13,7 @@ import { loginStart, loginSuccess, loginFailure } from '@/store/authSlice';
 const baseURL = process.env.NEXT_PUBLIC_API_URL;
 
 const LoginForm: FC = () => {
-  const [loginFailed, setLoginFailed] = useState<string>(""); // Pastikan untuk menggunakan loginFailed
+  const [loginFailed, setLoginFailed] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const usernameRef = useRef<HTMLInputElement | null>(null);
   const router = useRouter();

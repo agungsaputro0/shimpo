@@ -1,3 +1,4 @@
+// HomeNavbar.tsx
 import { Fragment } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
@@ -6,8 +7,8 @@ import { useRouter } from 'next/router';
 import { UseScroll } from '../hooks/UseScroll';
 import axios from 'axios';
 import { message } from 'antd';
-import { useDispatch } from 'react-redux'; // Import useDispatch
-import { logout } from '@/store/authSlice'; // Import action logout
+import { useDispatch } from 'react-redux';
+import { logout } from '@/store/authSlice';
 
 const baseURL = process.env.NEXT_PUBLIC_API_URL;
 const navigation = [
@@ -27,7 +28,7 @@ type HomeNavbarProps = {
 const HomeNavbar = ({ userName }: HomeNavbarProps) => {
   const isScrolled = UseScroll(); 
   const router = useRouter();
-  const dispatch = useDispatch(); // Inisialisasi dispatch
+  const dispatch = useDispatch();
   
   const handleProfileClick = () => {
     router.push('/Profil'); 
@@ -38,7 +39,7 @@ const HomeNavbar = ({ userName }: HomeNavbarProps) => {
       const response = await axios.delete(`${baseURL}/logout`, { withCredentials: true });
       if (response.status === 200) {
         message.success('Logout berhasil');
-        dispatch(logout()); // Dispatch action logout
+        dispatch(logout());
         router.push("/Login"); 
       } else {
         console.error('Error during logout:', response.data);
