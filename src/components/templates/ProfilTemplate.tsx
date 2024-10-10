@@ -18,7 +18,7 @@ const baseURL = process.env.NEXT_PUBLIC_API_URL;
 
 const ProfilTemplate: FC = () => {
   const [dataUser, setDataUser] = useState<UserData | null>(null);
-  const userName = useSelector((state: RootState) => state.auth.userName); // Pastikan ini diperlukan
+ // const userName = useSelector((state: RootState) => state.auth.userName); // Pastikan ini diperlukan
 
   useEffect(() => {
     const fetchData = async () => {

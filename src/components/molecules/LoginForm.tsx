@@ -46,6 +46,7 @@ const LoginForm: FC = () => {
       });
       router.push("/Home");
     } catch (error) {
+      console.log(error);
       setLoginFailed("Invalid credentials");
       dispatch(loginFailure());
       notification.error({
