@@ -39,9 +39,7 @@ const LoginForm: FC = () => {
       const response = await axios.post(`${baseURL}/login`, data, {
         withCredentials: true,
       });
-      
-      dispatch(loginSuccess(response.data.name)); 
-
+      dispatch(loginSuccess(response.data.name));
       notification.success({
         message: "Login Berhasil!",
         description: "Selamat, Anda berhasil Login!",
@@ -49,14 +47,14 @@ const LoginForm: FC = () => {
       router.push("/Home");
     } catch (error) {
       setLoginFailed("Invalid credentials");
-      dispatch(loginFailure()); 
+      dispatch(loginFailure());
       notification.error({
         message: "Login Gagal!",
         description: "Mohon maaf, Kredensial Anda tidak valid!",
       });
     } finally {
       setLoading(false);
-    }
+    }    
   };
 
   const loadingIndicator = <LoadingOutlined style={{ fontSize: 24, color: 'white' }} spin />;

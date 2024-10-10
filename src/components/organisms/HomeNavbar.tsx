@@ -45,6 +45,7 @@ const HomeNavbar = ({ userName }: HomeNavbarProps) => {
         console.error('Error during logout:', response.data);
       }
     } catch (error) {
+      console.log(error);
       message.error('Terjadi kesalahan saat logout');
     }
   };

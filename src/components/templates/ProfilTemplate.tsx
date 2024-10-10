@@ -7,11 +7,18 @@ import { notification } from "antd";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 
+// Mendefinisikan interface untuk data pengguna
+interface UserData {
+  name: string;
+  nip: string;
+  email: string;
+}
+
 const baseURL = process.env.NEXT_PUBLIC_API_URL;
 
 const ProfilTemplate: FC = () => {
-  const [dataUser, setDataUser] = useState<any>({});
-  const userName = useSelector((state: RootState) => state.auth.userName);
+  const [dataUser, setDataUser] = useState<UserData | null>(null);
+  const userName = useSelector((state: RootState) => state.auth.userName); // Pastikan ini diperlukan
 
   useEffect(() => {
     const fetchData = async () => {
@@ -19,6 +26,7 @@ const ProfilTemplate: FC = () => {
         const response = await axios.get(`${baseURL}/user`, { withCredentials: true });
         setDataUser(response.data);
       } catch (error) {
+        console.error(error); // Menggunakan error di sini
         notification.error({
           message: "Gagal Memuat Data",
           description: "Terjadi kesalahan saat memuat data pengguna.",
@@ -32,7 +40,6 @@ const ProfilTemplate: FC = () => {
   const handleUpdate = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    // Mendapatkan elemen input dari form
     const target = event.currentTarget as HTMLFormElement;
     const updatedData = {
       name: (target.elements.namedItem("name") as HTMLInputElement).value,
@@ -48,6 +55,7 @@ const ProfilTemplate: FC = () => {
         description: "Data profil Anda berhasil diperbarui.",
       });
     } catch (error) {
+      console.error(error); // Menggunakan error di sini
       notification.error({
         message: "Gagal Memperbarui Data",
         description: "Terjadi kesalahan saat memperbarui data profil.",
@@ -68,7 +76,7 @@ const ProfilTemplate: FC = () => {
               typeInput="text"
               inputName="name"
               inputPlaceholder="Nama Anda"
-              defaultValue={dataUser.name || ""}
+              defaultValue={dataUser?.name || ""}
             />
             <InputElement
               inputClass="mb-6"
@@ -77,7 +85,7 @@ const ProfilTemplate: FC = () => {
               typeInput="text"
               inputName="nip"
               inputPlaceholder="NIP Anda"
-              defaultValue={dataUser.nip || ""}
+              defaultValue={dataUser?.nip || ""}
             />
             <InputElement
               inputClass="mb-6"
@@ -86,7 +94,7 @@ const ProfilTemplate: FC = () => {
               typeInput="email"
               inputName="email"
               inputPlaceholder="example@example.com"
-              defaultValue={dataUser.email || ""}
+              defaultValue={dataUser?.email || ""}
             />
             <InputElement
               inputClass="mb-6"
