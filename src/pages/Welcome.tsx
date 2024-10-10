@@ -1,4 +1,4 @@
-import AppShell from "./Appshell";
+import AppShell from "@/components/shell/Appshell";
 import LandingLayouts from "@/components/templates/Landing";
 import Head from "next/head";
 const appName = process.env.NEXT_PUBLIC_APP_NAME;

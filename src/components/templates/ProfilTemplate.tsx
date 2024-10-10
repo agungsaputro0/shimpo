@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Button, message } from 'antd';
+import { Form, Button, message, Spin } from 'antd';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import InputElement from '../atoms/InputElement';
 import LoadingSpinner from '../atoms/LoadingSpinner';
+import { LoadingOutlined } from '@ant-design/icons'; 
 
 const baseURL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -11,6 +12,7 @@ const ProfilePage = () => {
   const [form] = Form.useForm();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
+  const [submitLoading, setSubmitLoading] = useState(false); // State untuk loading submit
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -32,16 +34,21 @@ const ProfilePage = () => {
   }, [form]);
 
   const onFinish = async (values: any) => {
+    setSubmitLoading(true); // Mengatur loading submit ke true
     try {
       await axios.put(`${baseURL}/profil/update_me`, values, { withCredentials: true });
       message.success('Data profil berhasil diperbarui.');
-      router.push('/Home'); 
     } catch (error) {
       message.error('Gagal memperbarui data profil.');
+    } finally {
+      setSubmitLoading(false); // Mengatur loading submit ke false
     }
   };
 
   if (loading) return <LoadingSpinner />;
+
+  // Custom loading indicator untuk submit
+  const loadingIndicator = <LoadingOutlined style={{ fontSize: 24, color: 'white' }} spin />;
 
   return (
     <div className="flex pt-[64px] items-center justify-center">
@@ -82,19 +89,19 @@ const ProfilePage = () => {
                 inputPlaceholder="Masukkan email"
               />
             </Form.Item>
-            <Form.Item name="password" rules={[{ required: true, message: 'Harap masukkan password!' }]}>
+            <Form.Item name="new_password" rules={[{ message: 'Harap masukkan password!' }]}>
               <InputElement
                 inputClass="mb-4"
-                forwhat="password"
+                forwhat="new_password"
                 labelMessage="Password Baru"
                 typeInput="password"
-                inputName="password"
-                inputPlaceholder="Masukkan password"
+                inputName="new_password"
+                inputPlaceholder="Masukkan password Baru"
               />
             </Form.Item>
           </div>
           <div className="grid grid-cols-2 gap-6">
-          <Form.Item name="konfirmasi_password" rules={[{ required: true, message: 'Harap masukkan password!' }]}>
+            <Form.Item name="konfirmasi_password" rules={[{ required: true, message: 'Harap masukkan password!' }]}>
               <InputElement
                 inputClass="mb-4"
                 forwhat="konfirmasi_password"
@@ -107,7 +114,7 @@ const ProfilePage = () => {
           </div>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit" className="w-full bg-blue-500 text-white py-2 rounded-lg">
+            <Button type="primary" htmlType="submit" className="w-full bg-blue-500 text-white py-2 rounded-lg" loading={submitLoading}>
               SIMPAN
             </Button>
           </Form.Item>

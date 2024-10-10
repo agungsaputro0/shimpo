@@ -6,13 +6,17 @@ import axios from "axios";
 import { notification, Spin } from "antd";
 import { LoadingOutlined } from '@ant-design/icons'; 
 import { useRouter } from "next/router";
+import { useDispatch } from 'react-redux'; // Import useDispatch
+import { loginStart, loginSuccess, loginFailure } from '@/store/authSlice'; // Import actions
 
 const baseURL = process.env.NEXT_PUBLIC_API_URL;
+
 const LoginForm: FC = () => {
   const [loginFailed, setLoginFailed] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const usernameRef = useRef<HTMLInputElement | null>(null);
   const router = useRouter();
+  const dispatch = useDispatch(); // Inisialisasi dispatch
 
   useEffect(() => {
     if (usernameRef.current) {
@@ -22,6 +26,7 @@ const LoginForm: FC = () => {
 
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    dispatch(loginStart()); // Dispatch loginStart
     setLoading(true);
 
     const data = {
@@ -30,17 +35,21 @@ const LoginForm: FC = () => {
     };
 
     try {
-      await axios.post(`${baseURL}/login`, data, {
+      const response = await axios.post(`${baseURL}/login`, data, {
         withCredentials: true,
       });
+      
+      // Dispatch action untuk menyimpan nama pengguna
+      dispatch(loginSuccess(response.data.name)); // Pastikan nama pengguna ada dalam response
+
       notification.success({
         message: "Login Berhasil!",
         description: "Selamat, Anda berhasil Login!",
       });
       router.push("/Home");
-      // Handle successful login (e.g., redirect to a different page)
-    } catch {
+    } catch (error) {
       setLoginFailed("Invalid credentials");
+      dispatch(loginFailure()); // Dispatch loginFailure ketika terjadi kesalahan
       notification.error({
         message: "Login Gagal!",
         description: "Mohon maaf, Kredensial Anda tidak valid!",
@@ -50,7 +59,6 @@ const LoginForm: FC = () => {
     }
   };
 
-  // Custom loading indicator
   const loadingIndicator = <LoadingOutlined style={{ fontSize: 24, color: 'white' }} spin />;
 
   return (

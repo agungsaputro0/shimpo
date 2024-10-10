@@ -1,4 +1,4 @@
-import Homeshell from "./HomeShell";
+import Homeshell from "@/components/shell/HomeShell";
 import Head from "next/head";
 import ProfilePage from "@/components/templates/ProfilTemplate";
 

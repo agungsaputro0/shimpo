@@ -1,6 +1,6 @@
 import LoginForm from "@/components/molecules/LoginForm";
 import LoginTemplate from "@/components/templates/LoginTemplate";
-import AppShell from "./Appshell";
+import AppShell from "@/components/shell/Appshell";
 
 const LoginPage = () => {
     return (

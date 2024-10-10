@@ -6,6 +6,8 @@ import { useRouter } from 'next/router';
 import { UseScroll } from '../hooks/UseScroll';
 import axios from 'axios';
 import { message } from 'antd';
+import { useDispatch } from 'react-redux'; // Import useDispatch
+import { logout } from '@/store/authSlice'; // Import action logout
 
 const baseURL = process.env.NEXT_PUBLIC_API_URL;
 const navigation = [
@@ -25,7 +27,8 @@ type HomeNavbarProps = {
 const HomeNavbar = ({ userName }: HomeNavbarProps) => {
   const isScrolled = UseScroll(); 
   const router = useRouter();
-
+  const dispatch = useDispatch(); // Inisialisasi dispatch
+  
   const handleProfileClick = () => {
     router.push('/Profil'); 
   };
@@ -35,6 +38,7 @@ const HomeNavbar = ({ userName }: HomeNavbarProps) => {
       const response = await axios.delete(`${baseURL}/logout`, { withCredentials: true });
       if (response.status === 200) {
         message.success('Logout berhasil');
+        dispatch(logout()); // Dispatch action logout
         router.push("/Login"); 
       } else {
         console.error('Error during logout:', response.data);
@@ -93,7 +97,6 @@ const HomeNavbar = ({ userName }: HomeNavbarProps) => {
               </div>
 
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                {/* Profile dropdown */}
                 <Menu as="div" className="relative ml-3">
                   <div>
                     <Menu.Button className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">
@@ -103,6 +106,7 @@ const HomeNavbar = ({ userName }: HomeNavbarProps) => {
                       </span>
                     </Menu.Button>
                   </div>
+
                   <Transition
                     as={Fragment}
                     enter="transition ease-out duration-100"
@@ -112,42 +116,41 @@ const HomeNavbar = ({ userName }: HomeNavbarProps) => {
                     leaveFrom="transform opacity-100 scale-100"
                     leaveTo="transform opacity-0 scale-95"
                   >
-                    <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                      <Menu.Item>
-                        {({ active }) => (
-                          <button
-                            onClick={handleProfileClick}
-                            className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
-                          >
-                            Profil
-                          </button>
-                        )}
-                      </Menu.Item>
-                      <Menu.Item>
-                        {({ active }) => (
-                          <button
-                            onClick={handleLogout}
-                            className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
-                          >
-                            Logout
-                          </button>
-                        )}
-                      </Menu.Item>
+                    <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                      <div className="py-1" role="none">
+                        <Menu.Item>
+                          {({ active }) => (
+                            <button
+                              onClick={handleProfileClick}
+                              className={classNames(
+                                active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                                'block px-4 py-2 text-sm w-full text-left'
+                              )}
+                            >
+                              Profil
+                            </button>
+                          )}
+                        </Menu.Item>
+                        <Menu.Item>
+                          {({ active }) => (
+                            <button
+                              onClick={handleLogout}
+                              className={classNames(
+                                active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                                'block px-4 py-2 text-sm w-full text-left'
+                              )}
+                            >
+                              Logout
+                            </button>
+                          )}
+                        </Menu.Item>
+                      </div>
                     </Menu.Items>
                   </Transition>
                 </Menu>
               </div>
             </div>
           </div>
-          <Disclosure.Panel className="sm:hidden">
-            <div className="flex flex-col space-y-1 px-2 pb-2">
-              {navigation.map((item) => (
-                <Link key={item.name} href={item.to} className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">
-                  {item.name}
-                </Link>
-              ))}
-            </div>
-          </Disclosure.Panel>
         </>
       )}
     </Disclosure>
