@@ -23,7 +23,7 @@ const ProfilTemplate: FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${baseURL}/user`, { withCredentials: true });
+        const response = await axios.get(`${baseURL}/profil/me`, { withCredentials: true });
         setDataUser(response.data);
       } catch (error) {
         console.error(error); // Menggunakan error di sini
